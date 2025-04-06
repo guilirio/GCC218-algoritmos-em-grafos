@@ -197,6 +197,22 @@ class Graph:
         if not checked:
             return 0 
         return total / ((self.node) * (self.node - 1))
+    
+    def betweennessCentrality(self):
+        d = self.floydWarshall()
+        centrality = [0.0 for _ in range(self.node)]
+
+        for s in range(self.node):
+            for t in range(self.node):
+                if s != t and d[s][t] != 999:
+                    # Para todos os vértices intermediários v
+                    for v in range(self.node):
+                        if v != s and v != t:
+                            # Se v estiver no caminho mínimo entre s e t
+                            if d[s][v] + d[v][t] == d[s][t]:
+                                centrality[v] += 1
+
+        return centrality
 
     def showStatistics(self):
 
@@ -210,6 +226,12 @@ class Graph:
         print(f'8. Componentes conectados: {self.connectedComp()}')
         print(f'9. Grau minimo dos vertices: {self.minDegree()}')
         print(f'10. Grau maximo dos vertices: {self.maxDegree()}')
+
+        centrality = self.betweennessCentrality()
+        print('11. Intermediação:')
+        for i, c in enumerate(centrality):
+            print(f'    - Nó {i+1}: {c}')
+
         print(f'11. Intermediacao: ')
         print(f'12. Caminho medio: {self.averagePathLength()}')
         print(f'13. Diametro: {self.maxRoad()} \n')
