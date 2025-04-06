@@ -232,7 +232,6 @@ class Graph:
         for i, c in enumerate(centrality):
             print(f'    - Nó {i+1}: {c}')
 
-        print(f'11. Intermediacao: ')
         print(f'12. Caminho medio: {self.averagePathLength()}')
         print(f'13. Diametro: {self.maxRoad()} \n')
 
