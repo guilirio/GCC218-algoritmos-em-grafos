@@ -11,7 +11,9 @@ import copy
 
 class Graph:
     def __init__(self):
-        with open(file_path, "r") as myFile: # init my graph
+        self.file_path = file_path  # ✅ ADICIONADO: torna file_path um atributo da instância
+
+        with open(self.file_path, "r") as myFile:  # ✅ USANDO self.file_path
             line = myFile.readlines()
             for myLine in line:
                 myLine = myLine.strip()
@@ -49,6 +51,7 @@ class Graph:
 
         INF = 999
         self.graph = [[INF for i in range(self.node)] for j in range(self.node)]
+
 
     def addEdge(self, u, v, cost):
         self.graph[u-1][v-1] = int(cost)
