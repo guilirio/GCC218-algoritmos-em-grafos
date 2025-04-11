@@ -11,9 +11,9 @@ import copy
 
 class Graph:
     def __init__(self):
-        self.file_path = file_path  # ✅ ADICIONADO: torna file_path um atributo da instância
+        self.file_path = file_path  
 
-        with open(self.file_path, "r") as myFile:  # ✅ USANDO self.file_path
+        with open(self.file_path, "r") as myFile: 
             line = myFile.readlines()
             for myLine in line:
                 myLine = myLine.strip()
