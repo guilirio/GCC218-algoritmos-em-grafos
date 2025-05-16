@@ -7,6 +7,8 @@
 
 file_path = "selected_instances/BHW1.dat"
 
+import numpy as np
+import pandas as pd
 import copy
 
 class Graph:
@@ -238,3 +240,81 @@ class Graph:
     def printGraph(self):
         for i in range(self.node):
             print(self.graph[i])
+
+# ======================= DESENHAR ESTATISTICAS DO GRAFO ==============================
+# 
+def get_statistics_dataframe(g: Graph):
+    stats = {
+        "Estatística": [
+            "Quantidade de vértices",
+            "Quantidade de arestas",
+            "Quantidade de arcos",
+            "Vértices requeridos",
+            "Arestas requeridas",
+            "Arcos requeridos",
+            "Densidade",
+            "Componentes conectados",
+            "Grau mínimo",
+            "Grau máximo",
+            "Caminho médio",
+            "Diâmetro"
+        ],
+        "Valor": [
+            g.node,
+            g.edges,
+            g.arc,
+            g.reN,
+            g.reE,
+            g.reA,
+            round(g.density(), 4),
+            g.connectedComp(),
+            g.minDegree(),
+            g.maxDegree(),
+            round(g.averagePathLength(), 4),
+            g.maxRoad()
+        ]
+    }
+
+    return pd.DataFrame(stats)
+
+def get_betweenness_dataframe(g: Graph):
+    centrality = g.betweennessCentrality()
+    data = {
+        "Nó": [f"V{i+1}" for i in range(len(centrality))],
+        "Intermediação": centrality
+    }
+
+    return pd.DataFrame(data)
+
+def ascii_bar_chart(g: Graph, width=40):
+    df = get_betweenness_dataframe(g)
+    max_val = max(df["Intermediação"])
+    for _, row in df.iterrows():
+        bar_len = int((row["Intermediação"] / max_val) * width) if max_val > 0 else 0
+        bar = '█' * bar_len
+        print(f'{row["Nó"]:>4}: {bar} ({row["Intermediação"]})')
+
+def get_adjacency_matrix(g: Graph):
+    matriz = np.array(g.graph, dtype=object)
+    matriz[matriz == 999] = '∞'
+
+    df = pd.DataFrame(matriz)
+    df.columns = [f'V{i+1}' for i in range(g.node)]
+    df.index = [f'V{i+1}' for i in range(g.node)]
+
+    return df
+
+def show_betweenness_bars(g):
+    df = get_betweenness_dataframe(g)
+    return df.style.bar(subset=["Intermediação"], color='#5fba7d')
+
+# Função para gráfico ASCII
+def ascii_bar_chart(g, width=40):
+    df = get_betweenness_dataframe(g)
+    max_val = max(df["Intermediação"])
+    for _, row in df.iterrows():
+        bar_len = int((row["Intermediação"] / max_val) * width) if max_val > 0 else 0
+        bar = '█' * bar_len
+        print(f'{row["Nó"]:>4}: {bar} ({row["Intermediação"]})')
+
+# =================================================================================
