@@ -9,6 +9,8 @@ file_path = "selected_instances/BHW1.dat"
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import random
 import copy
 
 class Graph:
@@ -316,5 +318,44 @@ def ascii_bar_chart(g, width=40):
         bar_len = int((row["Intermediação"] / max_val) * width) if max_val > 0 else 0
         bar = '█' * bar_len
         print(f'{row["Nó"]:>4}: {bar} ({row["Intermediação"]})')
+
+def draw_graph(g: Graph, figsize=(8, 6)):
+    plt.figure(figsize=figsize)
+    positions = {}
+
+    # Gerar posições circulares para os nós
+    angle = 2 * np.pi / g.node
+    radius = 10
+    for i in range(g.node):
+        theta = angle * i
+        x = radius * np.cos(theta)
+        y = radius * np.sin(theta)
+        positions[i] = (x, y)
+        plt.text(x, y + 0.5, f'V{i+1}', ha='center', fontsize=9, fontweight='bold')
+
+    # Desenhar arestas e arcos
+    for i in range(g.node):
+        for j in range(g.node):
+            weight = g.graph[i][j]
+            if weight != 999:
+                x1, y1 = positions[i]
+                x2, y2 = positions[j]
+
+                # Desenhar arco (com seta)
+                if g.graph[j][i] == 999:  # arco direcionado i -> j
+                    plt.arrow(x1, y1, x2 - x1, y2 - y1,
+                              length_includes_head=True,
+                              head_width=0.4, head_length=0.7,
+                              fc='red', ec='red', alpha=0.6)
+                    plt.text((x1 + x2) / 2, (y1 + y2) / 2,
+                             f'{weight}', fontsize=8, color='red')
+                elif i < j:  # aresta não-direcionada
+                    plt.plot([x1, x2], [y1, y2], 'b-', alpha=0.5)
+                    plt.text((x1 + x2) / 2, (y1 + y2) / 2,
+                             f'{weight}', fontsize=8, color='blue')
+
+    plt.axis('off')
+    plt.title('Visualização do Grafo')
+    plt.show()
 
 # =================================================================================
