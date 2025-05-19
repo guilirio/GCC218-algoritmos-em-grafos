@@ -5,12 +5,10 @@
 #
 #=======================================================
 
-file_path = "selected_instances/BHW1.dat"
-
 import copy
 
 class Graph:
-    def __init__(self):
+    def __init__(self, file_path):
         self.file_path = file_path  
 
         with open(self.file_path, "r") as myFile: 
@@ -71,11 +69,10 @@ class Graph:
         return d
 
     def addRoads(self):
-        global file_path
         isEdge = False
         isArc = False
         
-        with open(file_path, "r") as myFile:
+        with open(self.file_path, "r") as myFile:
             line = myFile.readlines()
             
             for myLine in line:
@@ -202,7 +199,6 @@ class Graph:
         return total / ((self.node) * (self.node - 1))
 
     def showStatistics(self):
-
         print(f'\n1. Quantidade de vertices: {self.node}')
         print(f'2. Quantidade de arestas: {self.edges}')
         print(f'3. Quantidade de arcos: {self.arc}')
